@@ -1,6 +1,6 @@
 from langchain.chat_models import init_chat_model
 from langchain_core.language_models import BaseChatModel
-
+import os
 from my_agent.core.infisical_client import aget_secret
 
 _cached_api_keys: dict[str, str] = {}
@@ -14,24 +14,27 @@ _PROVIDER_MAP = {
     "claude": ("anthropic",    "ANTHROPIC_API_KEY"),
 }
 
-
 def _resolve_provider(model: str) -> tuple[str, str]:
     for prefix, (provider, secret) in _PROVIDER_MAP.items():
-        if model.startswith(prefix):
+        if model.lower().startswith(prefix):
             return provider, secret
     return "openai", "OPENAI_API_KEY"
 
-
 async def _get_api_key(model: str) -> str:
     global _cached_api_keys
-
     provider, secret_name = _resolve_provider(model)
+    
+    # Check environment first
+    env_key = os.environ.get(secret_name)
+    if env_key:
+        return env_key
 
     if provider not in _cached_api_keys:
-        _cached_api_keys[provider] = await aget_secret(secret_name)
-
-    return _cached_api_keys[provider]
-
+        secret = await aget_secret(secret_name)
+        if secret:
+            _cached_api_keys[provider] = secret
+    
+    return _cached_api_keys.get(provider, "")
 
 async def get_llm(
     model: str = "gpt-4o",
