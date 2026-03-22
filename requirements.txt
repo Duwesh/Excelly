@@ -4,21 +4,29 @@
 langchain
 langchain-core
 langchain-openai
+langchain-google-genai
+langchain-anthropic
 langgraph
 langgraph-checkpoint-sqlite==2.0.6
 aiosqlite==0.20.0
 
-# Data processing (for sandbox)
+# Data processing
 pandas
 numpy
 openpyxl
 matplotlib
+seaborn
+scipy
+statsmodels
+scikit-learn
 tabulate
 
 # HTTP client for sandbox communication
 httpx
 
-# FastAPI server for sandbox (dev dependency)
+# FastAPI server for sandbox
 fastapi
-fastapi[standard]
-uvicorn[standard]
+uvicorn
+jinja2
+python-multipart
+python-dotenv
