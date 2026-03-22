@@ -46,5 +46,4 @@ async def planning_node(state: ExcelAnalysisState) -> Dict[str, Any]:
         return {"analysis_plan": response.plan_text, "analysis_steps": structured_steps[:5]}
     except Exception as e:
         return {"analysis_plan": "1. Load data\n2. Analyze\n3. Summarize", "analysis_steps": []}
-village_planning_node = planning_node
 

@@ -52,5 +52,5 @@ async def supervisor_node(state: ExcelAnalysisState) -> Dict[str, Any]:
         return {"supervisor_decision": response.model_dump() if hasattr(response, 'model_dump') else response}
     except Exception as exc:
         return _fallback_decision(f"Supervisor error: {exc}")
-village_supervisor_node = supervisor_node
+
 

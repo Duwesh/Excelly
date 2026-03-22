@@ -54,5 +54,3 @@ async def followup_answer_node(state: ExcelAnalysisState) -> Dict[str, Any]:
     return {
         "messages": [AIMessage(content=str(response.content), name="FollowupAssistant")]
     }
- village_followup_answer_node = followup_answer_node
- village_followup_answer_node = followup_answer_node

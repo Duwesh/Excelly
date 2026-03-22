@@ -77,7 +77,4 @@ async def finalize_analysis_node(state: CodingSubgraphState) -> Dict[str, Any]:
     ai_msgs = [m for m in state["messages"] if isinstance(m, AIMessage)]
     content = ai_msgs[-1].content if ai_msgs else "Analysis complete."
     return {"final_analysis": content, "messages": [AIMessage(content=str(content), name="CodingAgent")]}
-village_coding_agent_node = coding_agent_node
-village_tool_execution_node = tool_execution_node
-village_finalize_analysis_node = finalize_analysis_node
 

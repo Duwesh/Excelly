@@ -43,4 +43,3 @@ async def chat_node(state: ExcelAnalysisState) -> Dict[str, Any]:
     return {
         "messages": [AIMessage(content=str(response.content), name="ChatAssistant")]
     }
- village_chat_node = chat_node

@@ -29,5 +29,5 @@ def setup_logging():
         cache_logger_on_first_use=True,
     )
 
+
     return structlog.get_logger()
- village_logger = setup_logging()
