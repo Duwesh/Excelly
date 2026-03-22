@@ -29,10 +29,10 @@ def main():
     print()
     print("-" * 70)
     if success:
-        print("✅ Sandbox setup completed successfully!")
+        print("[SUCCESS] Sandbox setup completed successfully!")
         return 0
     else:
-        print("❌ Sandbox setup failed!")
+        print("[FAILED] Sandbox setup failed!")
         return 1
 
 

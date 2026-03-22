@@ -45,7 +45,7 @@ def ensure_sandbox_exists() -> bool:
     if VENV_DIR.exists() and get_python_executable():
         return True
 
-    print("🏗️  Creating sandbox virtual environment...")
+    print("[SANDBOX] Creating sandbox virtual environment...")
     try:
         SANDBOX_DIR.mkdir(parents=True, exist_ok=True)
         PLOTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -60,10 +60,10 @@ def ensure_sandbox_exists() -> bool:
         ]
         print(f"   Installing base packages...")
         subprocess.run([get_pip_executable(), "install"] + base_packages, capture_output=True)
-        print("✅ Sandbox environment created successfully!")
+        print("[SUCCESS] Sandbox environment created successfully!")
         return True
     except Exception as e:
-        print(f"❌ Failed to create sandbox: {e}")
+        print(f"[ERROR] Failed to create sandbox: {e}")
         return False
 
 
