@@ -1,7 +1,8 @@
+import os
 import httpx
 from typing import Any, Dict
 
-SANDBOX_SERVER_URL = "http://localhost:8765"
+SANDBOX_SERVER_URL = os.getenv("SANDBOX_SERVER_URL", "http://localhost:8765")
 
 class SandboxClient:
     def __init__(self, server_url: str = SANDBOX_SERVER_URL, session_id: str = "default"):
