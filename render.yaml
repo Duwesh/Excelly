@@ -1,0 +1,54 @@
+services:
+  # ──────────────────────────────────────────────────────────────────────────
+  # Service 1: Main FastAPI API Server
+  # ──────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: excelly-api
+    runtime: python
+    plan: starter          # upgrade to 'standard' for production
+    region: oregon         # choose closest to your users
+    buildCommand: pip install -r requirements.txt && python setup_sandbox.py
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false          # set manually in Render dashboard
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: TAVILY_API_KEY
+        sync: false
+      - key: LANGSMITH_API_KEY
+        sync: false
+      - key: LANGSMITH_ENDPOINT
+        value: https://api.smith.langchain.com
+      - key: LANGSMITH_PROJECT
+        sync: false
+      - key: LANGSMITH_TRACING
+        value: "true"
+      - key: INFISICAL_CLIENT_ID
+        sync: false
+      - key: INFISICAL_CLIENT_TOKEN
+        sync: false
+      - key: INFISICAL_PROJECT_ID
+        sync: false
+      - key: NEO4J_API_KEY
+        sync: false
+      # Internal URL of the sandbox server (Service 2 below)
+      - key: SANDBOX_SERVER_URL
+        value: http://excelly-sandbox:8765
+
+  # ──────────────────────────────────────────────────────────────────────────
+  # Service 2: Sandbox Execution Server (private — not exposed publicly)
+  # ──────────────────────────────────────────────────────────────────────────
+  - type: worker
+    name: excelly-sandbox
+    runtime: python
+    plan: starter
+    region: oregon         # must match Service 1 region
+    buildCommand: pip install -r requirements.txt && python setup_sandbox.py
+    startCommand: python run_sandbox_server.py
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
