@@ -5,47 +5,62 @@ services:
   - type: web
     name: excelly-api
     runtime: python
-    plan: starter          # upgrade to 'standard' for production
-    region: oregon         # choose closest to your users
-    buildCommand: pip install -r requirements.txt && python setup_sandbox.py
+    plan: starter
+    region: oregon
+    rootDir: .                # repo root — where requirements.txt lives
+    buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /api/health
     envVars:
       - key: OPENAI_API_KEY
-        sync: false          # set manually in Render dashboard
+        sync: false
       - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: GEMINI_API_KEY
         sync: false
       - key: TAVILY_API_KEY
         sync: false
+      - key: LANGSMITH_TRACING
+        value: "false"        # disable until a valid LANGSMITH_API_KEY is set
       - key: LANGSMITH_API_KEY
         sync: false
       - key: LANGSMITH_ENDPOINT
         value: https://api.smith.langchain.com
       - key: LANGSMITH_PROJECT
         sync: false
-      - key: LANGSMITH_TRACING
-        value: "true"
       - key: INFISICAL_CLIENT_ID
         sync: false
       - key: INFISICAL_CLIENT_TOKEN
         sync: false
       - key: INFISICAL_PROJECT_ID
         sync: false
-      - key: NEO4J_API_KEY
-        sync: false
       # Internal URL of the sandbox server (Service 2 below)
       - key: SANDBOX_SERVER_URL
         value: http://excelly-sandbox:8765
+      # ── Model overrides (default in config.py is gemini-2.0-flash) ──
+      - key: ROUTER_MODEL
+        value: gpt-4o-mini
+      - key: SUPERVISOR_MODEL
+        value: gpt-4o
+      - key: PLANNING_MODEL
+        value: gpt-4o
+      - key: CODING_MODEL
+        value: gpt-4o-mini
+      - key: CHAT_MODEL
+        value: gpt-4o-mini
+      - key: FOLLOWUP_MODEL
+        value: gpt-4o-mini
 
   # ──────────────────────────────────────────────────────────────────────────
-  # Service 2: Sandbox Execution Server (private — not exposed publicly)
+  # Service 2: Sandbox Execution Server (private worker)
   # ──────────────────────────────────────────────────────────────────────────
   - type: worker
     name: excelly-sandbox
     runtime: python
     plan: starter
-    region: oregon         # must match Service 1 region
-    buildCommand: pip install -r requirements.txt && python setup_sandbox.py
+    region: oregon            # must match Service 1 region
+    rootDir: .                # repo root — where requirements.txt lives
+    buildCommand: pip install -r requirements.txt
     startCommand: python run_sandbox_server.py
     envVars:
       - key: OPENAI_API_KEY
